@@ -91,4 +91,13 @@ using (var appDbContext = new AppDbContext(primaryKey))
 The key is to use `HasBaseType` in `OnModelCreating`. See updated source code.
 
 This stops working when embedded entities enter the picture.
-I will create a new demo for that.
+I will create a new demo for that: [ef-cosmos-embedded-inheritance](https://github.com/TomasHubelbauer/ef-cosmos-embedded-inheritance)
+
+I tried playing around with this a bit more.
+I renamed the `Exception` entity type to `Exception0` to make sure it is unique in the scope.
+I already knew that it resolved to the correct symbol but I wanted to make sure there wasn't a symbol resolution bug anyway.
+I added additional fluent API constraints - `HasOne` and `HasMany` on `Recurrence` for Unrecurrence and Exceptions respectively.
+I added IDs to all abstract and concrete types just in case and also unabstracted Unrecurrence and Exception0.
+I added manualy keys using the fluent API to Exception0 and Unrecurrence.
+I did all this based on the runtime model validator exceptions.
+And now I have the weirdest exception of all time which means it's probably time for an issue.

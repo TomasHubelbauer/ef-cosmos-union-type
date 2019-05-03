@@ -37,7 +37,7 @@ namespace ef_cosmos_union_type
           {
             Monday = true,
             Unrecurrence = new UnrecurrenceAtIndex { RecurrenceIndex = 10 },
-            Exceptions = new Exception[] {
+            Exceptions = new Exception0[] {
               new ExceptionByDate { DateAndTime = DateTime.Today },
               new ExceptionAtIndex { RecurrenceIndex = 2, SlotIndex = 1 },
             },
@@ -70,9 +70,13 @@ namespace ef_cosmos_union_type
     {
       modelBuilder.Entity<UnrecurrenceAtIndex>().HasBaseType<Unrecurrence>();
       modelBuilder.Entity<UnrecurrenceByDate>().HasBaseType<Unrecurrence>();
-      modelBuilder.Entity<ExceptionAtIndex>().HasBaseType<Exception>();
-      modelBuilder.Entity<ExceptionByDate>().HasBaseType<Exception>();
-      //modelBuilder.Entity<Availability>().OwnsOne(a => a.Recurrence);
+      modelBuilder.Entity<ExceptionAtIndex>().HasBaseType<Exception0>();
+      modelBuilder.Entity<ExceptionByDate>().HasBaseType<Exception0>();
+      modelBuilder.Entity<Availability>().OwnsOne(a => a.Recurrence);
+      modelBuilder.Entity<Recurrence>().OwnsOne(a => a.Unrecurrence);
+      modelBuilder.Entity<Recurrence>().OwnsMany(a => a.Exceptions);
+      modelBuilder.Entity<Unrecurrence>().HasKey(a => a.Id);
+      modelBuilder.Entity<Exception0>().HasKey(a => a.Id);
     }
   }
 
@@ -94,36 +98,40 @@ namespace ef_cosmos_union_type
     public bool Saturday { get; set; }
     public bool Sunday { get; set; }
     public Unrecurrence Unrecurrence { get; set; }
-    public ICollection<Exception> Exceptions { get; set; }
+    public ICollection<Exception0> Exceptions { get; set; }
   }
 
-  public abstract class Unrecurrence
+  public class Unrecurrence
   {
     public Guid Id { get; set; }
   }
 
   public sealed class UnrecurrenceByDate : Unrecurrence
   {
+    public Guid Id { get; set; }
     public DateTime DateAndTime { get; set; }
   }
 
   public sealed class UnrecurrenceAtIndex : Unrecurrence
   {
+    public Guid Id { get; set; }
     public int RecurrenceIndex { get; set; }
   }
 
-  public abstract class Exception
+  public class Exception0
   {
     public Guid Id { get; set; }
   }
 
-  public sealed class ExceptionByDate : Exception
+  public sealed class ExceptionByDate : Exception0
   {
+    public Guid Id { get; set; }
     public DateTime DateAndTime { get; set; }
   }
 
-  public sealed class ExceptionAtIndex : Exception
+  public sealed class ExceptionAtIndex : Exception0
   {
+    public Guid Id { get; set; }
     public int RecurrenceIndex { get; set; }
     public int SlotIndex { get; set; }
   }
