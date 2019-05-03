@@ -68,7 +68,9 @@ namespace ef_cosmos_union_type
     public DbSet<Availability> Availabilities { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-      optionsBuilder.UseCosmos("https://localhost:8081", this.primaryKey, nameof(ef_cosmos_union_type));
+      //optionsBuilder.UseCosmos("https://localhost:8081", this.primaryKey, nameof(ef_cosmos_union_type));
+      optionsBuilder.UseSqlServer($@"Server=(localdb)\{nameof(ef_cosmos_union_type)};Database={nameof(ef_cosmos_union_type)};");
+
       optionsBuilder.UseLoggerFactory(LoggerFactory);
       optionsBuilder.EnableDetailedErrors();
       optionsBuilder.EnableSensitiveDataLogging();
