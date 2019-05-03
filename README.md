@@ -86,4 +86,9 @@ using (var appDbContext = new AppDbContext(primaryKey))
 }
 ```
 
+9. F5 to run the VS Code debugger
+
 The key is to use `HasBaseType` in `OnModelCreating`. See updated source code.
+
+This stops working when embedded entities enter the picture.
+I will create a new demo for that.

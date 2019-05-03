@@ -30,18 +30,22 @@ namespace ef_cosmos_union_type
       {
         await appDbContext.Database.EnsureDeletedAsync();
         await appDbContext.Database.EnsureCreatedAsync();
-        await appDbContext.Recurrences.AddAsync(new Recurrence
+        await appDbContext.Availabilities.AddAsync(new Availability
         {
-          Monday = true,
-          Unrecurrence = new UnrecurrenceAtIndex { RecurrenceIndex = 10 },
-          Exceptions = new Exception[] {
-            new ExceptionByDate { DateAndTime = DateTime.Today },
-            new ExceptionAtIndex { RecurrenceIndex = 2, SlotIndex = 1 },
+          DateAndTime = DateTime.Today,
+          Recurrence = new Recurrence
+          {
+            Monday = true,
+            Unrecurrence = new UnrecurrenceAtIndex { RecurrenceIndex = 10 },
+            Exceptions = new Exception[] {
+              new ExceptionByDate { DateAndTime = DateTime.Today },
+              new ExceptionAtIndex { RecurrenceIndex = 2, SlotIndex = 1 },
+            },
           },
         });
 
         await appDbContext.SaveChangesAsync();
-        var recurrence = await appDbContext.Recurrences.SingleOrDefaultAsync();
+        var availability = await appDbContext.Availabilities.SingleOrDefaultAsync();
         // Place debugger here
       }
     }
@@ -56,7 +60,7 @@ namespace ef_cosmos_union_type
       this.primaryKey = primaryKey;
     }
 
-    public DbSet<Recurrence> Recurrences { get; set; }
+    public DbSet<Availability> Availabilities { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       optionsBuilder.UseCosmos("https://localhost:8081", this.primaryKey, nameof(ef_cosmos_union_type));
@@ -68,7 +72,15 @@ namespace ef_cosmos_union_type
       modelBuilder.Entity<UnrecurrenceByDate>().HasBaseType<Unrecurrence>();
       modelBuilder.Entity<ExceptionAtIndex>().HasBaseType<Exception>();
       modelBuilder.Entity<ExceptionByDate>().HasBaseType<Exception>();
+      //modelBuilder.Entity<Availability>().OwnsOne(a => a.Recurrence);
     }
+  }
+
+  public sealed class Availability
+  {
+    public Guid Id { get; set; }
+    public DateTime DateAndTime { get; set; }
+    public Recurrence Recurrence { get; set; }
   }
 
   public sealed class Recurrence
