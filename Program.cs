@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 namespace ef_cosmos_union_type
 {
@@ -45,7 +48,7 @@ namespace ef_cosmos_union_type
         });
 
         await appDbContext.SaveChangesAsync();
-        var availability = await appDbContext.Availabilities.SingleOrDefaultAsync();
+        var availability = appDbContext.Availabilities.ToArray();
         // Place debugger here
       }
     }
@@ -60,10 +63,15 @@ namespace ef_cosmos_union_type
       this.primaryKey = primaryKey;
     }
 
+    public static readonly LoggerFactory LoggerFactory = new LoggerFactory(new[] { new ConsoleLoggerProvider((_, __) => true, true) });
+
     public DbSet<Availability> Availabilities { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       optionsBuilder.UseCosmos("https://localhost:8081", this.primaryKey, nameof(ef_cosmos_union_type));
+      optionsBuilder.UseLoggerFactory(LoggerFactory);
+      optionsBuilder.EnableDetailedErrors();
+      optionsBuilder.EnableSensitiveDataLogging();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
