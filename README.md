@@ -102,4 +102,6 @@ I added manualy keys using the fluent API to Exception0 and Unrecurrence.
 I did all this based on the runtime model validator exceptions.
 And now I have the weirdest exception of all time which means it's probably time for an issue.
 
-- [ ] Try to see if this will work with SQL Server?
+## To-Do
+
+### Try to see if this will work with SQL Server
